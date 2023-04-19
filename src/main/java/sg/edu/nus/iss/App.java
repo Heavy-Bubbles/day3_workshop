@@ -2,7 +2,9 @@ package sg.edu.nus.iss;
 
 import java.io.Console;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -74,6 +76,30 @@ public class App
                 for (String dirList : directoryListing) {
                     System.out.println(dirList);
                 }
+
+            }
+
+            if(input.startsWith("add")) {
+            input = input.replace(",", " ");
+
+            // 1. use FileWriter & PrintWriter to write a loginuser file
+            FileWriter fw = new FileWriter(dirPath + File.separator + loginUser, false);
+            PrintWriter pw = new PrintWriter(fw);
+
+            String currentScanString = "";
+            Scanner inputScanner = new Scanner (input.substring(4));
+            while (inputScanner.hasNext()) {
+                currentScanString = inputScanner.next();
+                cart.add(currentScanString);
+
+                // 2. write to file using printwriter
+                pw.write("\n" + currentScanString);
+            }
+
+            // 3. flush and close the filewriter and printwriter objects
+            pw.flush();
+            pw.close();
+            fw.close();
 
             }
         }
