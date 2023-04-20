@@ -1,7 +1,10 @@
 package sg.edu.nus.iss;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.Console;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -83,7 +86,7 @@ public class App
             input = input.replace(",", " ");
 
             // 1. use FileWriter & PrintWriter to write a loginuser file
-            FileWriter fw = new FileWriter(dirPath + File.separator + loginUser, false);
+            FileWriter fw = new FileWriter(dirPath + File.separator + loginUser, true);
             PrintWriter pw = new PrintWriter(fw);
 
             String currentScanString = "";
@@ -102,6 +105,67 @@ public class App
             fw.close();
 
             }
-        }
-    }
+
+            // user must be login first
+            // must perform the following:
+            // e.g. login <loginuser>
+            if (input.equals("list")) {
+                // Need a file class and bufferedreader class to read the cart items from the file
+                File readFile = new File(dirPath + File.separator + loginUser);
+                BufferedReader br = new BufferedReader(new FileReader(readFile));
+
+                String readFileInput = "";
+
+                // reset the cart items list collection 
+                cart = new ArrayList<String>();
+
+
+                // while loop to read through all the item records in the file
+                while ((readFileInput = br.readLine()) !=null){
+                    System.out.println(readFileInput);
+
+                    cart.add(readFileInput);
+                }
+
+                // exit from while loop - close the buffered reader
+                br.close();
+            }
+
+            if (input.startsWith("delete")){
+                // stringVal[0] -> "delete"
+                //stringVal [1] -> index to delete the cart items
+                String [] stringVal = input.split(" ");
+
+                // e.g. delete 2
+                // remove 3rd item in the cart arrayList
+                int deleteIndex = Integer.parseInt(stringVal[1]);
+                if ( deleteIndex <= cart.size()) {
+                    cart.remove(deleteIndex);
+                } else {
+                    System.out.println("Index out of range!");
+                }
+
+                // 1. open FileWriter and BufferedReader
+                FileWriter fw = new FileWriter(dirPath + File.separator + loginUser, false);
+                BufferedWriter bw = new BufferedWriter(fw);
+
+                // 2. loop to write cart items to file
+                int listIndex = 0;
+                while (listIndex < cart.size()) {
+                    bw.write(cart.get(listIndex));
+                    bw.newLine();
+
+                    listIndex++;
+                }
+                // 3. close FileWriter and BufferedReader
+                bw.flush();
+                fw.flush();
+                bw.close();
+                fw.close();
+                
+            }
+        } // end of the while loop
+
+        System.out.println("Bye bye!");
+    } // end of main function
 }
